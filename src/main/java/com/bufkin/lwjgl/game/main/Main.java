@@ -1,11 +1,12 @@
 package com.bufkin.lwjgl.game.main;
 
 import com.bufkin.lwjgl.game.Model;
+import com.bufkin.lwjgl.game.Shader;
 import com.bufkin.lwjgl.game.textures.Texture;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL46.*;
 
 public class Main {
     
@@ -41,8 +42,9 @@ public class Main {
                 2, 3, 0
         };
         
-        Model   model = new Model(vertices, texture, indices);
-        Texture tex   = new Texture("./res/test.png");
+        Model   model  = new Model(vertices, texture, indices);
+        Shader  shader = new Shader("shader");
+        Texture tex    = new Texture("./res/test.png");
         
         while (!glfwWindowShouldClose(window)) {
             if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_TRUE) {
@@ -52,7 +54,10 @@ public class Main {
             glfwPollEvents();
             glClear(GL_COLOR_BUFFER_BIT);
             
-            tex.bind();
+            tex.bind(0);
+            shader.bind();
+            shader.setUniform("sampler", 0);
+            
             model.render();
             
             glfwSwapBuffers(window);
