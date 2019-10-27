@@ -6,6 +6,8 @@
         <option value="activate" />
         <option value="organizeImports" />
         <option value="reformat" />
+        <option value="unqualifiedFieldAccess" />
+        <option value="unqualifiedMethodAccess" />
       </set>
     </option>
     <option name="configurationPath" value="" />
