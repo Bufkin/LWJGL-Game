@@ -1,4 +1,4 @@
-package com.bufkin.lwjgl.game;
+package com.bufkin.lwjgl.game.shaders;
 
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -15,47 +15,47 @@ public class Shader {
     private int program, vs, fs;
     
     public Shader(String fileName) {
-        program = glCreateProgram();
+        this.program = glCreateProgram();
         
-        vs = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vs, readFile(fileName + ".vs"));
-        glCompileShader(vs);
+        this.vs = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(this.vs, this.readFile(fileName + ".vs"));
+        glCompileShader(this.vs);
         
-        if (glGetShaderi(vs, GL_COMPILE_STATUS) != 1) {
-            System.err.println(glGetShaderInfoLog(vs));
+        if (glGetShaderi(this.vs, GL_COMPILE_STATUS) != 1) {
+            System.err.println(glGetShaderInfoLog(this.vs));
             System.exit(1);
         }
         
-        fs = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fs, readFile(fileName + ".fs"));
-        glCompileShader(fs);
+        this.fs = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(this.fs, this.readFile(fileName + ".fs"));
+        glCompileShader(this.fs);
         
-        if (glGetShaderi(fs, GL_COMPILE_STATUS) != 1) {
-            System.err.println(glGetShaderInfoLog(fs));
+        if (glGetShaderi(this.fs, GL_COMPILE_STATUS) != 1) {
+            System.err.println(glGetShaderInfoLog(this.fs));
             System.exit(1);
         }
         
-        glAttachShader(program, vs);
-        glAttachShader(program, fs);
+        glAttachShader(this.program, this.vs);
+        glAttachShader(this.program, this.fs);
         
-        glBindAttribLocation(program, 0, "vertices");
-        glBindAttribLocation(program, 1, "textures");
+        glBindAttribLocation(this.program, 0, "vertices");
+        glBindAttribLocation(this.program, 1, "textures");
         
-        glLinkProgram(program);
-        if (glGetProgrami(program, GL_LINK_STATUS) != 1) {
-            System.err.println(glGetProgramInfoLog(program));
+        glLinkProgram(this.program);
+        if (glGetProgrami(this.program, GL_LINK_STATUS) != 1) {
+            System.err.println(glGetProgramInfoLog(this.program));
             System.exit(1);
         }
         
-        glValidateProgram(program);
-        if (glGetProgrami(program, GL_VALIDATE_STATUS) != 1) {
-            System.err.println(glGetProgramInfoLog(program));
+        glValidateProgram(this.program);
+        if (glGetProgrami(this.program, GL_VALIDATE_STATUS) != 1) {
+            System.err.println(glGetProgramInfoLog(this.program));
             System.exit(1);
         }
     }
     
     public void setUniform(String name, int value) {
-        int location = glGetUniformLocation(program, name);
+        int location = glGetUniformLocation(this.program, name);
         
         if (location != -1) {
             glUniform1i(location, value);
@@ -63,7 +63,7 @@ public class Shader {
     }
     
     public void setUniform(String name, Matrix4f value) {
-        int         location = glGetUniformLocation(program, name);
+        int         location = glGetUniformLocation(this.program, name);
         FloatBuffer buffer   = BufferUtils.createFloatBuffer(4 * 4);
         value.get(buffer);
         
@@ -73,7 +73,7 @@ public class Shader {
     }
     
     public void bind() {
-        glUseProgram(program);
+        glUseProgram(this.program);
     }
     
     private String readFile(String fileName) {

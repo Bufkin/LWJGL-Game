@@ -2,9 +2,10 @@ package com.bufkin.lwjgl.game.main;
 
 import com.bufkin.lwjgl.game.Camera;
 import com.bufkin.lwjgl.game.Model;
-import com.bufkin.lwjgl.game.Shader;
 import com.bufkin.lwjgl.game.Timer;
+import com.bufkin.lwjgl.game.shaders.Shader;
 import com.bufkin.lwjgl.game.textures.Texture;
+import com.bufkin.lwjgl.game.window.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
@@ -23,9 +24,9 @@ public class Main {
             System.exit(1);
         }
         
-        long window = glfwCreateWindow(this.WIDTH, this.HEIGHT, "Window", 0, 0);
-        glfwShowWindow(window);
-        glfwMakeContextCurrent(window);
+        Window window = new Window();
+        window.createWindow("Game");
+        
         GL.createCapabilities();
         
         Camera camera = new Camera(this.WIDTH, this.HEIGHT);
@@ -68,7 +69,7 @@ public class Main {
         double time        = Timer.getTime();
         double unprocessed = 0;
         
-        while (!glfwWindowShouldClose(window)) {
+        while (!window.shouldClose()) {
             boolean can_render = false;
             
             double time_2 = Timer.getTime();
@@ -83,9 +84,9 @@ public class Main {
                 can_render = true;
                 
                 target = scale;
-                if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_TRUE) {
-                    glfwSetWindowShouldClose(window, Boolean.TRUE);
-                }
+//                if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_TRUE) {
+//                    glfwSetWindowShouldClose(window, Boolean.TRUE);
+//                }
                 
                 glfwPollEvents();
                 
@@ -105,7 +106,7 @@ public class Main {
                 shader.setUniform("projection", camera.getProjection().mul(target));
                 model.render();
                 
-                glfwSwapBuffers(window);
+                window.swapBuffers();
                 frames++;
             }
         }
