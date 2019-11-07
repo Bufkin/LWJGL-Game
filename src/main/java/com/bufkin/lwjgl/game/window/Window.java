@@ -1,5 +1,6 @@
 package com.bufkin.lwjgl.game.window;
 
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -8,8 +9,21 @@ public class Window {
     private long window;
     private int width, height;
 
-    public Window() {
 
+    private boolean fullScreen;
+
+    public static void setCallbacks() {
+        glfwSetErrorCallback(new GLFWErrorCallback() {
+            @Override
+            public void invoke(int error, long description) {
+                throw new IllegalStateException(GLFWErrorCallback.getDescription(description));
+            }
+        });
+    }
+
+    public Window() {
+        this.setSize(640, 480);
+        this.setFullScreen(false);
     }
 
     public void createWindow(String title) {
@@ -55,5 +69,13 @@ public class Window {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public boolean isFullScreen() {
+        return this.fullScreen;
+    }
+
+    public void setFullScreen(boolean fullScreen) {
+        this.fullScreen = fullScreen;
     }
 }
