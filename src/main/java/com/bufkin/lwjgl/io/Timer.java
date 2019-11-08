@@ -1,4 +1,4 @@
-package com.bufkin.lwjgl.game;
+package com.bufkin.lwjgl.io;
 
 public class Timer {
     public static double getTime() {

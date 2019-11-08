@@ -1,12 +1,12 @@
-package com.bufkin.lwjgl.game.main;
+package com.bufkin.lwjgl.game;
 
-import com.bufkin.lwjgl.game.Camera;
-import com.bufkin.lwjgl.game.Model;
-import com.bufkin.lwjgl.game.Timer;
-import com.bufkin.lwjgl.game.shaders.Shader;
-import com.bufkin.lwjgl.game.textures.Texture;
-import com.bufkin.lwjgl.game.window.Window;
-import org.joml.Matrix4f;
+import com.bufkin.lwjgl.io.Timer;
+import com.bufkin.lwjgl.io.Window;
+import com.bufkin.lwjgl.render.Camera;
+import com.bufkin.lwjgl.render.Shader;
+import com.bufkin.lwjgl.world.Tile;
+import com.bufkin.lwjgl.world.TileRenderer;
+import com.bufkin.lwjgl.world.World;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 
@@ -33,7 +33,9 @@ public class Main {
         Camera camera = new Camera(this.WIDTH, this.HEIGHT);
         glEnable(GL_TEXTURE_2D);
 
-        float[] vertices = new float[]{
+        TileRenderer tiles = new TileRenderer();
+
+       /* float[] vertices = new float[]{
                 -0.5f, 0.5f, 0,     // TOP LEFT     0
                 0.5f, 0.5f, 0,      // TOP RIGHT    1
                 0.5f, -0.5f, 0,     // BOTTOM RIGHT 2
@@ -52,15 +54,12 @@ public class Main {
                 2, 3, 0
         };
 
-        Model model = new Model(vertices, texture, indices);
+        Model model = new Model(vertices, texture, indices);*/
         Shader shader = new Shader("shader");
-        Texture tex = new Texture("./res/test.png");
+        World world = new World();
 
-        Matrix4f scale = new Matrix4f()
-                .translate(new Vector3f(100, 0, 0))
-                .scale(256);
-        Matrix4f target = new Matrix4f();
-        camera.setPosition(new Vector3f(-100, 0, 0));
+        world.setTile(Tile.test2, 0, 0);
+        world.setTile(Tile.test2, 63, 63);
 
         double frame_cap = 1.0 / 60.0;
 
@@ -84,9 +83,28 @@ public class Main {
                 unprocessed -= frame_cap;
                 can_render = true;
 
-                target = scale;
+                if (window.getInput().isKeyPressed(GLFW_KEY_ESCAPE)) {
+                    glfwSetWindowShouldClose(window.getWindow(), true);
+                }
 
-                glfwPollEvents();
+                if (window.getInput().isKeyDown(GLFW_KEY_A)) {
+                    camera.getPosition().sub(new Vector3f(-5, 0, 0));
+                }
+
+                if (window.getInput().isKeyDown(GLFW_KEY_D)) {
+                    camera.getPosition().sub(new Vector3f(5, 0, 0));
+                }
+
+                if (window.getInput().isKeyDown(GLFW_KEY_W)) {
+                    camera.getPosition().sub(new Vector3f(0, 5, 0));
+                }
+
+                if (window.getInput().isKeyDown(GLFW_KEY_S)) {
+                    camera.getPosition().sub(new Vector3f(0, -5, 0));
+                }
+
+                world.correctCamera(camera, window);
+                window.update();
 
                 if (frame_time >= 1.0f) {
                     frame_time = 0;
@@ -98,11 +116,13 @@ public class Main {
             if (can_render) {
                 glClear(GL_COLOR_BUFFER_BIT);
 
-                tex.bind(0);
-                shader.bind();
-                shader.setUniform("sampler", 0);
-                shader.setUniform("projection", camera.getProjection().mul(target));
-                model.render();
+//                shader.bind();
+//                shader.setUniform("sampler", 0);
+//                shader.setUniform("projection", camera.getProjection().mul(target));
+//                model.render();
+//                tex.bind(0);
+
+                world.render(tiles, shader, camera, window);
 
                 window.swapBuffers();
                 frames++;

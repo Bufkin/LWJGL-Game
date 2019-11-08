@@ -1,4 +1,4 @@
-package com.bufkin.lwjgl.game.window;
+package com.bufkin.lwjgl.io;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -9,8 +9,8 @@ public class Window {
     private long window;
     private int width, height;
 
-
     private boolean fullScreen;
+    private Input input;
 
     public static void setCallbacks() {
         glfwSetErrorCallback(new GLFWErrorCallback() {
@@ -40,11 +40,22 @@ public class Window {
         );
         glfwShowWindow(this.window);
         glfwMakeContextCurrent(this.window);
+
+        this.input = new Input(this.window);
     }
 
     public void setSize(int width, int height) {
         this.width = width;
         this.height = height;
+    }
+
+    public void update() {
+        this.input.update();
+        glfwPollEvents();
+    }
+
+    public Input getInput() {
+        return this.input;
     }
 
     public boolean shouldClose() {
@@ -77,5 +88,9 @@ public class Window {
 
     public void setFullScreen(boolean fullScreen) {
         this.fullScreen = fullScreen;
+    }
+
+    public long getWindow() {
+        return this.window;
     }
 }
