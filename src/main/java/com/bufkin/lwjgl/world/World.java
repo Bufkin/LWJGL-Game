@@ -16,9 +16,9 @@ public class World {
     private Matrix4f world;
 
     public World() {
-        this.width = 64;
-        this.height = 64;
-        this.scale = 32;
+        this.width = 1024;
+        this.height = 1024;
+        this.scale = 16;
 
         this.tiles = new byte[this.width * this.height];
 
@@ -27,12 +27,6 @@ public class World {
     }
 
     public void render(TileRenderer render, Shader shader, Camera camera, Window window) {
-//        for (int i = 0; i < this.height; i++) {
-//            for (int j = 0; j < this.width; j++) {
-//                render.renderTile(this.tiles[j + i * this.width], j, -i, shader, this.world, camera);
-//            }
-//        }
-
         int posX = ((int) camera.getPosition().x + (window.getWidth() / 2)) / (this.scale * 2);
         int posY = ((int) camera.getPosition().y - (window.getHeight() / 2)) / (this.scale * 2);
 
@@ -73,5 +67,9 @@ public class World {
         } catch (ArrayIndexOutOfBoundsException e) {
             return null;
         }
+    }
+
+    public float getScale() {
+        return this.scale;
     }
 }

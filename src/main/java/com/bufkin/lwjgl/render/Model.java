@@ -7,7 +7,7 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL46.*;
 
-public class Model {
+public class Model implements AutoCloseable {
     private int draw_count;
     private int v_id;
     private int t_id;
@@ -37,6 +37,7 @@ public class Model {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
+
     public void render() {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -62,5 +63,12 @@ public class Model {
         buffer.put(data);
         buffer.flip();
         return buffer;
+    }
+
+    @Override
+    public void close() throws Exception {
+        glDeleteBuffers(this.v_id);
+        glDeleteBuffers(this.t_id);
+        glDeleteBuffers(this.i_id);
     }
 }

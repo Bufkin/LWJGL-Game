@@ -1,5 +1,6 @@
 package com.bufkin.lwjgl.game;
 
+import com.bufkin.lwjgl.entity.Player;
 import com.bufkin.lwjgl.io.Timer;
 import com.bufkin.lwjgl.io.Window;
 import com.bufkin.lwjgl.render.Camera;
@@ -7,7 +8,6 @@ import com.bufkin.lwjgl.render.Shader;
 import com.bufkin.lwjgl.world.Tile;
 import com.bufkin.lwjgl.world.TileRenderer;
 import com.bufkin.lwjgl.world.World;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -15,8 +15,8 @@ import static org.lwjgl.opengl.GL46.*;
 
 public class Main {
 
-    private final int WIDTH = 1280;
-    private final int HEIGHT = 720;
+    private final int WIDTH = 800;
+    private final int HEIGHT = 600;
 
     private Main() {
         if (!glfwInit()) {
@@ -57,6 +57,7 @@ public class Main {
         Model model = new Model(vertices, texture, indices);*/
         Shader shader = new Shader("shader");
         World world = new World();
+        Player player = new Player();
 
         world.setTile(Tile.test2, 0, 0);
         world.setTile(Tile.test2, 63, 63);
@@ -87,23 +88,8 @@ public class Main {
                     glfwSetWindowShouldClose(window.getWindow(), true);
                 }
 
-                if (window.getInput().isKeyDown(GLFW_KEY_A)) {
-                    camera.getPosition().sub(new Vector3f(-5, 0, 0));
-                }
-
-                if (window.getInput().isKeyDown(GLFW_KEY_D)) {
-                    camera.getPosition().sub(new Vector3f(5, 0, 0));
-                }
-
-                if (window.getInput().isKeyDown(GLFW_KEY_W)) {
-                    camera.getPosition().sub(new Vector3f(0, 5, 0));
-                }
-
-                if (window.getInput().isKeyDown(GLFW_KEY_S)) {
-                    camera.getPosition().sub(new Vector3f(0, -5, 0));
-                }
-
                 world.correctCamera(camera, window);
+                player.update((float) frame_cap, window, camera, world);
                 window.update();
 
                 if (frame_time >= 1.0f) {
@@ -123,6 +109,7 @@ public class Main {
 //                tex.bind(0);
 
                 world.render(tiles, shader, camera, window);
+                player.render(shader, camera);
 
                 window.swapBuffers();
                 frames++;

@@ -11,7 +11,7 @@ import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL46.*;
 
-public class Shader {
+public class Shader implements AutoCloseable {
     private int program, vs, fs;
 
     public Shader(String fileName) {
@@ -93,5 +93,14 @@ public class Shader {
         }
 
         return string.toString();
+    }
+
+    @Override
+    public void close() throws Exception {
+        glDetachShader(this.program, this.vs);
+        glDetachShader(this.program, this.fs);
+        glDeleteShader(this.vs);
+        glDeleteShader(this.fs);
+        glDeleteProgram(this.program);
     }
 }

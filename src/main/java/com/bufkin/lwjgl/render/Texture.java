@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL46.*;
 
-public class Texture {
+public class Texture implements AutoCloseable {
     private int id, width, height;
 
     public Texture(String fileName) {
@@ -53,5 +53,10 @@ public class Texture {
             glActiveTexture(GL_TEXTURE0 + sampler);
             glBindTexture(GL_TEXTURE_2D, this.id);
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        glDeleteTextures(this.id);
     }
 }

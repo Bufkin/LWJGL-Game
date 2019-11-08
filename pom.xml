@@ -14,7 +14,7 @@
         <steamworks4j-server.version>1.8.0</steamworks4j-server.version>
         <joml.version>1.9.19</joml.version>
         <lwjgl.natives>natives-windows</lwjgl.natives>
-        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.release>13</maven.compiler.release>
     </properties>
 
     <dependencyManagement>
