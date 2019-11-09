@@ -1,10 +1,10 @@
 package com.bufkin.lwjgl.entity;
 
 import com.bufkin.lwjgl.io.Window;
+import com.bufkin.lwjgl.render.Animation;
 import com.bufkin.lwjgl.render.Camera;
 import com.bufkin.lwjgl.render.Model;
 import com.bufkin.lwjgl.render.Shader;
-import com.bufkin.lwjgl.render.Texture;
 import com.bufkin.lwjgl.world.World;
 import org.joml.Vector3f;
 
@@ -12,7 +12,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Player {
     private Model model;
-    private Texture texture;
+    // private Texture texture;
+    private Animation texture;
     private Transform transform;
 
     public Player() {
@@ -36,7 +37,7 @@ public class Player {
         };
 
         this.model = new Model(vertices, texture, indices);
-        this.texture = new Texture("test.png");
+        this.texture = new Animation(5, 5, "an");
 
         this.transform = new Transform();
         this.transform.scale = new Vector3f(16, 16, 1);

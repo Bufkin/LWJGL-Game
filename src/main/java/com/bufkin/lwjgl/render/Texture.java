@@ -16,7 +16,7 @@ public class Texture implements AutoCloseable {
     public Texture(String fileName) {
         BufferedImage bi;
         try {
-            bi = ImageIO.read(new File("./res/" + fileName));
+            bi = ImageIO.read(new File("./res/textures/" + fileName));
             this.width = bi.getWidth();
             this.height = bi.getHeight();
 
