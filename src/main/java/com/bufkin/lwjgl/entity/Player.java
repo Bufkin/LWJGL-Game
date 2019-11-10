@@ -3,71 +3,40 @@ package com.bufkin.lwjgl.entity;
 import com.bufkin.lwjgl.io.Window;
 import com.bufkin.lwjgl.render.Animation;
 import com.bufkin.lwjgl.render.Camera;
-import com.bufkin.lwjgl.render.Model;
-import com.bufkin.lwjgl.render.Shader;
 import com.bufkin.lwjgl.world.World;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Player {
-    private Model model;
-    // private Texture texture;
-    private Animation texture;
-    private Transform transform;
+public class Player extends Entity {
 
-    public Player() {
-        float[] vertices = new float[]{
-                -1.0f, 1.0f, 0,     // TOP LEFT     0
-                1.0f, 1.0f, 0,      // TOP RIGHT    1
-                1.0f, -1.0f, 0,     // BOTTOM RIGHT 2
-                -1.0f, -1.0f, 0,    // BOTTOM LEFT  3
-        };
-
-        float[] texture = new float[]{
-                0, 0,
-                1, 0,
-                1, 1,
-                0, 1
-        };
-
-        int[] indices = new int[]{
-                0, 1, 2,
-                2, 3, 0
-        };
-
-        this.model = new Model(vertices, texture, indices);
-        this.texture = new Animation(5, 5, "an");
-
-        this.transform = new Transform();
-        this.transform.scale = new Vector3f(16, 16, 1);
+    public Player(Transform transform) {
+        super(new Animation(5, 15, "an"), transform);
     }
 
+    @Override
     public void update(float delta, Window window, Camera camera, World world) {
+        Vector2f movement = new Vector2f();
         if (window.getInput().isKeyDown(GLFW_KEY_A)) {
-            this.transform.pos.add(new Vector3f(-10 * delta, 0, 0));
+            movement.add(-10 * delta, 0);
         }
 
         if (window.getInput().isKeyDown(GLFW_KEY_D)) {
-            this.transform.pos.add(new Vector3f(10 * delta, 0, 0));
+            movement.add(10 * delta, 0);
         }
 
         if (window.getInput().isKeyDown(GLFW_KEY_W)) {
-            this.transform.pos.add(new Vector3f(0, 10 * delta, 0));
+            movement.add(0, 10 * delta);
         }
 
         if (window.getInput().isKeyDown(GLFW_KEY_S)) {
-            this.transform.pos.add(new Vector3f(0, -10 * delta, 0));
+            movement.add(0, -10 * delta);
         }
 
-        camera.setPosition(this.transform.pos.mul(-world.getScale(), new Vector3f()));
-    }
+        this.move(movement);
 
-    public void render(Shader shader, Camera camera) {
-        shader.bind();
-        shader.setUniform("sampler", 0);
-        shader.setUniform("projection", this.transform.getProjection(camera.getProjection()));
-        this.texture.bind(0);
-        this.model.render();
+        // TODO: Wert anpassen
+        camera.getPosition().lerp(this.transform.pos.mul(-world.getScale(), new Vector3f()), 0.05f);
     }
 }

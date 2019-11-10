@@ -1,11 +1,10 @@
 package com.bufkin.lwjgl.game;
 
-import com.bufkin.lwjgl.entity.Player;
+import com.bufkin.lwjgl.entity.Entity;
 import com.bufkin.lwjgl.io.Timer;
 import com.bufkin.lwjgl.io.Window;
 import com.bufkin.lwjgl.render.Camera;
 import com.bufkin.lwjgl.render.Shader;
-import com.bufkin.lwjgl.world.Tile;
 import com.bufkin.lwjgl.world.TileRenderer;
 import com.bufkin.lwjgl.world.World;
 import org.lwjgl.opengl.GL;
@@ -19,6 +18,8 @@ public class Main {
     private final int HEIGHT = 600;
 
     private Main() {
+        Window.setCallbacks();
+
         if (!glfwInit()) {
             System.err.println("GLFW failed to initialize!");
             System.exit(1);
@@ -34,6 +35,7 @@ public class Main {
         glEnable(GL_TEXTURE_2D);
 
         TileRenderer tiles = new TileRenderer();
+        Entity.initAsset();
 
        /* float[] vertices = new float[]{
                 -0.5f, 0.5f, 0,     // TOP LEFT     0
@@ -56,14 +58,10 @@ public class Main {
 
         Model model = new Model(vertices, texture, indices);*/
         Shader shader = new Shader("shader");
-        World world = new World();
-        Player player = new Player();
+        World world = new World("test_level");
 
-        world.setTile(Tile.test2, 0, 0);
-        world.setTile(Tile.test2, 63, 63);
 
         double frame_cap = 1.0 / 60.0;
-
         double frame_time = 0;
         int frames = 0;
 
@@ -89,7 +87,7 @@ public class Main {
                 }
 
                 world.correctCamera(camera, window);
-                player.update((float) frame_cap, window, camera, world);
+                world.update((float) frame_cap, window, camera);
                 window.update();
 
                 if (frame_time >= 1.0f) {
@@ -102,19 +100,13 @@ public class Main {
             if (can_render) {
                 glClear(GL_COLOR_BUFFER_BIT);
 
-//                shader.bind();
-//                shader.setUniform("sampler", 0);
-//                shader.setUniform("projection", camera.getProjection().mul(target));
-//                model.render();
-//                tex.bind(0);
-
                 world.render(tiles, shader, camera, window);
-                player.render(shader, camera);
 
                 window.swapBuffers();
                 frames++;
             }
         }
+        Entity.deleteAsset();
         glfwTerminate();
     }
 

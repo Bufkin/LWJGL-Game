@@ -29,7 +29,7 @@ public class Input {
     }
 
     public void update() {
-        for (int i = 0; i < GLFW_KEY_LAST; i++) {
+        for (int i = 32; i < GLFW_KEY_LAST; i++) {
             this.keys[i] = this.isKeyDown(i);
         }
     }
