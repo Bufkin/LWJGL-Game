@@ -4,11 +4,11 @@ import com.bufkin.lwjgl.io.Timer;
 
 public class Animation {
     private Texture[] frames;
-    private int pointer;
+    private int texturePointer;
     private double elapsedTime, currentTime, lastTime, fps;
 
     public Animation(int amount, int fps, String fileName) {
-        this.pointer = 0;
+        this.texturePointer = 0;
         this.elapsedTime = 0;
         this.currentTime = 0;
         this.lastTime = Timer.getTime();
@@ -17,7 +17,7 @@ public class Animation {
         this.frames = new Texture[amount];
 
         for (int i = 0; i < amount; i++) {
-            this.frames[i] = new Texture("anim/" + fileName + "_" + i + ".png");
+            this.frames[i] = new Texture(fileName + "/" + i + ".png");
         }
     }
 
@@ -30,13 +30,13 @@ public class Animation {
         this.elapsedTime += this.currentTime - this.lastTime;
 
         if (this.elapsedTime >= this.fps) {
-            this.elapsedTime -= this.fps;
-            this.pointer++;
+            this.elapsedTime = 0;
+            this.texturePointer++;
         }
 
-        if (this.pointer >= this.frames.length) this.pointer = 0;
+        if (this.texturePointer >= this.frames.length) this.texturePointer = 0;
 
         this.lastTime = this.currentTime;
-        this.frames[this.pointer].bind(sampler);
+        this.frames[this.texturePointer].bind(sampler);
     }
 }

@@ -15,14 +15,24 @@ import org.joml.Vector3f;
 public abstract class Entity {
     private static Model model;
     protected AABB boundingBox;
-    // private Texture texture;
-    protected Animation texture;
+    protected Animation[] animations;
+    private int use_animation;
+
     protected Transform transform;
 
-    public Entity(Animation animation, Transform transform) {
-        this.texture = animation;
+    public Entity(int max_animations, Transform transform) {
+        this.animations = new Animation[max_animations];
         this.transform = transform;
+        this.use_animation = 0;
         this.boundingBox = new AABB(new Vector2f(this.transform.pos.x, this.transform.pos.y), new Vector2f(transform.scale.x, transform.scale.y));
+    }
+
+    protected void setAnimation(int index, Animation animation) {
+        this.animations[index] = animation;
+    }
+
+    public void useAnimation(int index) {
+        this.use_animation = index;
     }
 
     public void move(Vector2f direction) {
@@ -87,7 +97,7 @@ public abstract class Entity {
         shader.bind();
         shader.setUniform("sampler", 0);
         shader.setUniform("projection", this.transform.getProjection(target));
-        this.texture.bind(0);
+        this.animations[this.use_animation].bind(0);
         this.model.render();
     }
 
@@ -116,5 +126,20 @@ public abstract class Entity {
 
     public static void deleteAsset() {
         model = null;
+    }
+
+    public void collideWithEntity(Entity entity) {
+        Collision collision = this.boundingBox.getCollision(entity.boundingBox);
+
+        if (collision.isIntersecting) {
+            collision.distance.x /= 2;
+            collision.distance.y /= 2;
+
+            this.boundingBox.correctPosition(entity.boundingBox, collision);
+            this.transform.pos.set(this.boundingBox.getCenter().x, this.boundingBox.getCenter().y, 0);
+
+            entity.boundingBox.correctPosition(this.boundingBox, collision);
+            entity.transform.pos.set(entity.boundingBox.getCenter().x, entity.boundingBox.getCenter().y, 0);
+        }
     }
 }

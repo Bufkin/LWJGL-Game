@@ -5,7 +5,6 @@ import com.bufkin.lwjgl.entity.Entity;
 import com.bufkin.lwjgl.entity.Player;
 import com.bufkin.lwjgl.entity.Transform;
 import com.bufkin.lwjgl.io.Window;
-import com.bufkin.lwjgl.render.Animation;
 import com.bufkin.lwjgl.render.Camera;
 import com.bufkin.lwjgl.render.Shader;
 import org.joml.Matrix4f;
@@ -21,7 +20,7 @@ import java.util.List;
 
 public class World {
     // TODO: Wert anpassen, damit man alles sieht
-    private final int view = 16;
+    private final int view = 32;
     private byte[] tiles;
     private AABB[] boundingBoxes;
     private List<Entity> entities;
@@ -68,17 +67,6 @@ public class World {
             // TODO: Finish level loader
             this.entities.add(new Player(new Transform()));
 
-            Transform t = new Transform();
-            t.pos.x = 0;
-            t.pos.y = -4;
-
-            this.entities.add(new Entity(new Animation(1, 1, "an"), t) {
-                @Override
-                public void update(float delta, Window window, Camera camera, World world) {
-                    this.move(new Vector2f(5 * delta, 0));
-                }
-            });
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,6 +112,12 @@ public class World {
         }
 
         for (int i = 0; i < this.entities.size(); i++) {
+            this.entities.get(i).collideWithTiles(this);
+
+            for (int j = i + 1; j < this.entities.size(); j++) {
+                this.entities.get(i).collideWithEntity(this.entities.get(j));
+            }
+
             this.entities.get(i).collideWithTiles(this);
         }
     }

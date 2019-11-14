@@ -11,8 +11,14 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Player extends Entity {
 
+    public static final int ANIM_IDLE = 0;
+    public static final int ANIM_WALK = 1;
+    public static final int ANIM_SIZE = 2;
+
     public Player(Transform transform) {
-        super(new Animation(5, 15, "an"), transform);
+        super(ANIM_SIZE, transform);
+        this.setAnimation(ANIM_IDLE, new Animation(4, 2, "player/idle"));
+        this.setAnimation(ANIM_WALK, new Animation(4, 2, "player/walking"));
     }
 
     @Override
@@ -35,6 +41,12 @@ public class Player extends Entity {
         }
 
         this.move(movement);
+
+        if (movement.x != 0 || movement.y != 0) {
+            this.useAnimation(ANIM_WALK);
+        } else {
+            this.useAnimation(ANIM_IDLE);
+        }
 
         // TODO: Wert anpassen
         camera.getPosition().lerp(this.transform.pos.mul(-world.getScale(), new Vector3f()), 0.05f);

@@ -31,32 +31,15 @@ public class Main {
 
         GL.createCapabilities();
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         Camera camera = new Camera(this.WIDTH, this.HEIGHT);
         glEnable(GL_TEXTURE_2D);
 
         TileRenderer tiles = new TileRenderer();
         Entity.initAsset();
 
-       /* float[] vertices = new float[]{
-                -0.5f, 0.5f, 0,     // TOP LEFT     0
-                0.5f, 0.5f, 0,      // TOP RIGHT    1
-                0.5f, -0.5f, 0,     // BOTTOM RIGHT 2
-                -0.5f, -0.5f, 0,    // BOTTOM LEFT  3
-        };
-
-        float[] texture = new float[]{
-                0, 0,
-                1, 0,
-                1, 1,
-                0, 1
-        };
-
-        int[] indices = new int[]{
-                0, 1, 2,
-                2, 3, 0
-        };
-
-        Model model = new Model(vertices, texture, indices);*/
         Shader shader = new Shader("shader");
         World world = new World("test_level");
 
