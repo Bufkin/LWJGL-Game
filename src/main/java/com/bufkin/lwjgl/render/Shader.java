@@ -1,6 +1,7 @@
 package com.bufkin.lwjgl.render;
 
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 
 import java.io.BufferedReader;
@@ -59,6 +60,14 @@ public class Shader implements AutoCloseable {
 
         if (location != -1) {
             glUniform1i(location, value);
+        }
+    }
+
+    public void setUniform(String name, Vector4f value) {
+        int location = glGetUniformLocation(this.program, name);
+
+        if (location != -1) {
+            glUniform4f(location, value.x, value.y, value.z, value.w);
         }
     }
 

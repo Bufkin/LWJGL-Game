@@ -48,7 +48,6 @@ public class Player extends Entity {
             this.useAnimation(ANIM_IDLE);
         }
 
-        // TODO: Wert anpassen
         camera.getPosition().lerp(this.transform.pos.mul(-world.getScale(), new Vector3f()), 0.05f);
     }
 }

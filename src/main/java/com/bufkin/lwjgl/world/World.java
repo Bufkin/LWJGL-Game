@@ -20,7 +20,8 @@ import java.util.List;
 
 public class World {
     // TODO: Wert anpassen, damit man alles sieht
-    private final int view = 32;
+    private int viewX;
+    private int viewY;
     private byte[] tiles;
     private AABB[] boundingBoxes;
     private List<Entity> entities;
@@ -29,27 +30,32 @@ public class World {
 
     private Matrix4f world;
 
-    public World(String world) {
+    public World(String world, Camera camera) {
         try {
-            BufferedImage tileSheet = ImageIO.read(new File("./levels/" + world + "_tiles.png"));
-            // BufferedImage entitySheet = ImageIO.read(new File("./levels/" + world + "_entity.png"));
+            BufferedImage tileSheet = ImageIO.read(new File("./levels/" + world + "/tiles.png"));
+            BufferedImage entitySheet = ImageIO.read(new File("./levels/" + world + "/entities.png"));
 
             this.width = tileSheet.getWidth();
             this.height = tileSheet.getHeight();
-            this.scale = 16;
+            this.scale = 32;
 
             this.world = new Matrix4f().setTranslation((new Vector3f(0)));
             this.world.scale(this.scale);
 
             int[] colorTileSheet = tileSheet.getRGB(0, 0, this.width, this.height, null, 0, this.width);
+            int[] colorEntitySheet = entitySheet.getRGB(0, 0, this.width, this.height, null, 0, this.width);
 
             this.tiles = new byte[this.width * this.height];
             this.boundingBoxes = new AABB[this.width * this.height];
             this.entities = new ArrayList<>();
 
+            Transform transform;
+
             for (int y = 0; y < this.height; y++) {
                 for (int x = 0; x < this.width; x++) {
                     int red = (colorTileSheet[x + y * this.width] >> 16) & 0xFF;
+                    int entityIndex = (colorEntitySheet[x + y * this.width] >> 16) & 0xFF;
+                    int entityAlpha = (colorEntitySheet[x + y * this.width] >> 24) & 0xFF;
 
                     Tile t;
                     try {
@@ -61,12 +67,26 @@ public class World {
                     if (t != null) {
                         this.setTile(t, x, y);
                     }
+
+                    if (entityAlpha > 0) {
+                        transform = new Transform();
+                        transform.pos.x = x * 2;
+                        transform.pos.y = -y * 2;
+                        switch (entityIndex) {
+                            // Player
+                            case 1:
+                                Player player = new Player(transform);
+                                this.entities.add(player);
+                                camera.getPosition().lerp(transform.pos.mul(-this.scale, new Vector3f()), 0.05f);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                 }
             }
 
-            // TODO: Finish level loader
             this.entities.add(new Player(new Transform()));
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -84,19 +104,24 @@ public class World {
         this.world.scale(this.scale);
     }
 
+    public void calculateView(Window window) {
+        this.viewX = (window.getWidth() / (this.scale * 2)) + 4;
+        this.viewY = (window.getHeight() / (this.scale * 2)) + 4;
+    }
+
     public Matrix4f getWorldMatrix() {
         return this.world;
     }
 
-    public void render(TileRenderer render, Shader shader, Camera camera, Window window) {
-        int posX = ((int) camera.getPosition().x + (window.getWidth() / 2)) / (this.scale * 2);
-        int posY = ((int) camera.getPosition().y - (window.getHeight() / 2)) / (this.scale * 2);
+    public void render(TileRenderer render, Shader shader, Camera camera) {
+        int posX = (int) camera.getPosition().x / (this.scale * 2);
+        int posY = (int) camera.getPosition().y / (this.scale * 2);
 
-        for (int i = 0; i < this.view; i++) {
-            for (int j = 0; j < this.view; j++) {
-                Tile t = this.getTile(i - posX, j + posX);
+        for (int i = 0; i < this.viewX; i++) {
+            for (int j = 0; j < this.viewY; j++) {
+                Tile t = this.getTile(i - posX - (this.viewX / 2) + 1, j + posX - (this.viewY / 2));
                 if (t != null) {
-                    render.renderTile(t, i - posX, -j - posY, shader, this.world, camera);
+                    render.renderTile(t, i - posX - (this.viewX / 2) + 1, -j - posY + (this.viewY / 2), shader, this.world, camera);
                 }
             }
         }
@@ -129,17 +154,17 @@ public class World {
         int h = this.height * this.scale * 2;
 
         // Collision detection
-        if (pos.x > -(window.getWidth() / 2) + this.scale)
-            pos.x = -(window.getWidth() / 2) + this.scale;
-        if (pos.x < w + (window.getWidth() / 2) + this.scale)
-            pos.x = w + (window.getWidth() / 2) + this.scale;
-        if (pos.y < (window.getHeight() / 2) - this.scale)
-            pos.y = (window.getHeight() / 2) - this.scale;
-        if (pos.y > h - (window.getHeight() / 2) - this.scale)
-            pos.y = h - (window.getHeight() / 2) - this.scale;
+        if (pos.x > -((float) window.getWidth() / 2) + this.scale)
+            pos.x = -((float) window.getWidth() / 2) + this.scale;
+        if (pos.x < w + ((float) window.getWidth() / 2) + this.scale)
+            pos.x = w + ((float) window.getWidth() / 2) + this.scale;
+        if (pos.y < ((float) window.getHeight() / 2) - this.scale)
+            pos.y = ((float) window.getHeight() / 2) - this.scale;
+        if (pos.y > h - ((float) window.getHeight() / 2) - this.scale)
+            pos.y = h - ((float) window.getHeight() / 2) - this.scale;
     }
 
-    public void setTile(Tile tile, int x, int y) {
+    private void setTile(Tile tile, int x, int y) {
         this.tiles[x + y * this.width] = tile.getId();
 
         if (tile.isSolid()) {
@@ -149,7 +174,7 @@ public class World {
         }
     }
 
-    public Tile getTile(int x, int y) {
+    private Tile getTile(int x, int y) {
         try {
             return Tile.tiles[this.tiles[x + y * this.width]];
         } catch (ArrayIndexOutOfBoundsException e) {

@@ -1,11 +1,11 @@
 package com.bufkin.lwjgl.entity;
 
+import com.bufkin.lwjgl.assets.Assets;
 import com.bufkin.lwjgl.collision.AABB;
 import com.bufkin.lwjgl.collision.Collision;
 import com.bufkin.lwjgl.io.Window;
 import com.bufkin.lwjgl.render.Animation;
 import com.bufkin.lwjgl.render.Camera;
-import com.bufkin.lwjgl.render.Model;
 import com.bufkin.lwjgl.render.Shader;
 import com.bufkin.lwjgl.world.World;
 import org.joml.Matrix4f;
@@ -13,29 +13,28 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public abstract class Entity {
-    private static Model model;
-    protected AABB boundingBox;
-    protected Animation[] animations;
+    private AABB boundingBox;
+    private Animation[] animations;
     private int use_animation;
 
-    protected Transform transform;
+    Transform transform;
 
-    public Entity(int max_animations, Transform transform) {
+    Entity(int max_animations, Transform transform) {
         this.animations = new Animation[max_animations];
         this.transform = transform;
         this.use_animation = 0;
         this.boundingBox = new AABB(new Vector2f(this.transform.pos.x, this.transform.pos.y), new Vector2f(transform.scale.x, transform.scale.y));
     }
 
-    protected void setAnimation(int index, Animation animation) {
+    void setAnimation(int index, Animation animation) {
         this.animations[index] = animation;
     }
 
-    public void useAnimation(int index) {
+    void useAnimation(int index) {
         this.use_animation = index;
     }
 
-    public void move(Vector2f direction) {
+    void move(Vector2f direction) {
         this.transform.pos.add(new Vector3f(direction, 0));
 
         this.boundingBox.getCenter().set(this.transform.pos.x, this.transform.pos.y);
@@ -98,34 +97,7 @@ public abstract class Entity {
         shader.setUniform("sampler", 0);
         shader.setUniform("projection", this.transform.getProjection(target));
         this.animations[this.use_animation].bind(0);
-        this.model.render();
-    }
-
-    public static void initAsset() {
-        float[] vertices = new float[]{
-                -1.0f, 1.0f, 0,     // TOP LEFT     0
-                1.0f, 1.0f, 0,      // TOP RIGHT    1
-                1.0f, -1.0f, 0,     // BOTTOM RIGHT 2
-                -1.0f, -1.0f, 0,    // BOTTOM LEFT  3
-        };
-
-        float[] texture = new float[]{
-                0, 0,
-                1, 0,
-                1, 1,
-                0, 1
-        };
-
-        int[] indices = new int[]{
-                0, 1, 2,
-                2, 3, 0
-        };
-
-        model = new Model(vertices, texture, indices);
-    }
-
-    public static void deleteAsset() {
-        model = null;
+        Assets.getModel().render();
     }
 
     public void collideWithEntity(Entity entity) {

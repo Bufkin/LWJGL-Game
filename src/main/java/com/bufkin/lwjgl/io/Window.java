@@ -2,14 +2,17 @@ package com.bufkin.lwjgl.io;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Window {
     private long window;
     private int width, height;
-
     private boolean fullScreen;
+    private boolean hasResized;
+    private GLFWWindowSizeCallback windowSizeCallback;
+
     private Input input;
 
     public static void setCallbacks() {
@@ -21,9 +24,22 @@ public class Window {
         });
     }
 
+    private void setLocalCallbacks() {
+        this.windowSizeCallback = new GLFWWindowSizeCallback() {
+            @Override
+            public void invoke(long window, int argWidth, int argHeight) {
+                Window.this.width = argWidth;
+                Window.this.height = argHeight;
+                Window.this.hasResized = true;
+            }
+        };
+        glfwSetWindowSizeCallback(this.window, this.windowSizeCallback);
+    }
+
     public Window() {
         this.setSize(640, 480);
         this.setFullScreen(false);
+        this.hasResized = false;
     }
 
     public void createWindow(String title) {
@@ -34,6 +50,7 @@ public class Window {
         }
 
         GLFWVidMode vid = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        assert vid != null;
         glfwSetWindowPos(this.window,
                 (vid.width() - this.width) / 2,
                 (vid.height() - this.height) / 2
@@ -42,6 +59,7 @@ public class Window {
         glfwMakeContextCurrent(this.window);
 
         this.input = new Input(this.window);
+        this.setLocalCallbacks();
     }
 
     public void setSize(int width, int height) {
@@ -50,8 +68,17 @@ public class Window {
     }
 
     public void update() {
+        this.hasResized = false;
         this.input.update();
         glfwPollEvents();
+    }
+
+    public boolean hasResized() {
+        return this.hasResized;
+    }
+
+    public void cleanUp() {
+        this.windowSizeCallback.close();
     }
 
     public Input getInput() {

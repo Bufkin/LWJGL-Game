@@ -1,6 +1,7 @@
 package com.bufkin.lwjgl.game;
 
-import com.bufkin.lwjgl.entity.Entity;
+import com.bufkin.lwjgl.assets.Assets;
+import com.bufkin.lwjgl.gui.Gui;
 import com.bufkin.lwjgl.io.Timer;
 import com.bufkin.lwjgl.io.Window;
 import com.bufkin.lwjgl.render.Camera;
@@ -38,11 +39,13 @@ public class Main {
         glEnable(GL_TEXTURE_2D);
 
         TileRenderer tiles = new TileRenderer();
-        Entity.initAsset();
+        Assets.initAsset();
 
         Shader shader = new Shader("shader");
-        World world = new World("test_level");
+        World world = new World("test_level", camera);
+        world.calculateView(window);
 
+        Gui gui = new Gui(window);
 
         double frame_cap = 1.0 / 60.0;
         double frame_time = 0;
@@ -62,6 +65,13 @@ public class Main {
             time = time_2;
 
             while (unprocessed >= frame_cap) {
+                if (window.hasResized()) {
+                    camera.setProjection(window.getWidth(), window.getHeight());
+                    gui.resizeCamera(window);
+                    world.calculateView(window);
+                    glViewport(0, 0, window.getWidth(), window.getHeight());
+                }
+
                 unprocessed -= frame_cap;
                 can_render = true;
 
@@ -82,14 +92,13 @@ public class Main {
 
             if (can_render) {
                 glClear(GL_COLOR_BUFFER_BIT);
-
-                world.render(tiles, shader, camera, window);
-
+                world.render(tiles, shader, camera);
+                gui.render();
                 window.swapBuffers();
                 frames++;
             }
         }
-        Entity.deleteAsset();
+        Assets.deleteAsset();
         glfwTerminate();
     }
 
