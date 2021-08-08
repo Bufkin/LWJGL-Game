@@ -1,0 +1,15 @@
+
+<
+java:S1170
+"!Make this final field static too.(ª¿€Žýÿÿÿÿ
+7
+java:S1170"!Make this final field static too.(ÓÏìÉ
+k	java:S1172"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¯¹ì‰ùÿÿÿÿ
+f	java:S117*"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(§Œÿ¬
+k	java:S117+"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÇÜ¢Ùûÿÿÿÿ
+j	java:S116
+"PRename this field "WIDTH" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ª¿€Žýÿÿÿÿ
+f	java:S116"QRename this field "HEIGHT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÓÏìÉ
+N	java:S106"9Replace this use of System.out or System.err by a logger.(öœÄØ
+N	java:S106P"9Replace this use of System.out or System.err by a logger.(ÿ¬‰î
+k	java:S1174"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(œñ­Ÿÿÿÿÿÿ
