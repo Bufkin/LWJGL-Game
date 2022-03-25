@@ -10,7 +10,7 @@
 
     <properties>
         <lwjgl.version>3.3.1</lwjgl.version>
-        <steamworks4j.version>1.8.0</steamworks4j.version>
+        <steamworks4j.version>1.9.0</steamworks4j.version>
         <steamworks4j-server.version>1.8.0</steamworks4j-server.version>
         <joml.version>1.10.4</joml.version>
         <lwjgl.natives>natives-windows</lwjgl.natives>
