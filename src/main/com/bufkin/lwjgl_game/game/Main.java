@@ -1,13 +1,13 @@
-package main.com.bufkin.lwjgl_game.game;
+package com.bufkin.lwjgl_game.game;
 
-import main.com.bufkin.lwjgl_game.assets.Assets;
-import main.com.bufkin.lwjgl_game.gui.Gui;
-import main.com.bufkin.lwjgl_game.io.Timer;
-import main.com.bufkin.lwjgl_game.io.Window;
-import main.com.bufkin.lwjgl_game.render.Camera;
-import main.com.bufkin.lwjgl_game.render.Shader;
-import main.com.bufkin.lwjgl_game.world.TileRenderer;
-import main.com.bufkin.lwjgl_game.world.World;
+import com.bufkin.lwjgl_game.assets.Assets;
+import com.bufkin.lwjgl_game.gui.Gui;
+import com.bufkin.lwjgl_game.io.Timer;
+import com.bufkin.lwjgl_game.io.Window;
+import com.bufkin.lwjgl_game.render.Camera;
+import com.bufkin.lwjgl_game.render.Shader;
+import com.bufkin.lwjgl_game.world.TileRenderer;
+import com.bufkin.lwjgl_game.world.World;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
