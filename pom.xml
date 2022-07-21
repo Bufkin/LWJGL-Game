@@ -9,26 +9,21 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <lwjgl.version>3.3.0</lwjgl.version>
-        <steamworks4j.version>1.8.0</steamworks4j.version>
-        <steamworks4j-server.version>1.8.0</steamworks4j-server.version>
-        <joml.version>1.10.2</joml.version>
+        <lwjgl.version>3.3.1</lwjgl.version>
+        <steamworks4j.version>1.9.0</steamworks4j.version>
+        <steamworks4j-server.version>1.9.0</steamworks4j-server.version>
+        <joml.version>1.10.4</joml.version>
         <lwjgl.natives>natives-windows</lwjgl.natives>
-        <maven.compiler.release>17</maven.compiler.release>
-        <maven.source.target>17</maven.source.target>
+        <maven.compiler.release>18</maven.compiler.release>
+        <maven.source.target>18</maven.source.target>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl</artifactId>
-            <version>${lwjgl.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.9.0-RC1</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -44,18 +39,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.code-disaster.steamworks4j</groupId>
-            <artifactId>steamworks4j</artifactId>
-            <version>${steamworks4j.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.code-disaster.steamworks4j</groupId>
-            <artifactId>steamworks4j-server</artifactId>
-            <version>${steamworks4j-server.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.joml</groupId>
             <artifactId>joml</artifactId>
             <version>${joml.version}</version>
@@ -64,7 +47,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.17.0</version>
+            <version>2.18.0</version>
         </dependency>
     </dependencies>
 </project>
