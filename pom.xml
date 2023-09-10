@@ -13,13 +13,14 @@
     </properties>
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.lwjgl</groupId>
-                <artifactId>lwjgl-bom</artifactId>
-                <version>${lwjgl.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-bom -->
+<dependency>
+    <groupId>org.lwjgl</groupId>
+    <artifactId>lwjgl-bom</artifactId>
+    <version>${lwjgl.version}</version>
+    <type>pom</type>
+</dependency>
+
         </dependencies>
     </dependencyManagement>
     <dependencies>
