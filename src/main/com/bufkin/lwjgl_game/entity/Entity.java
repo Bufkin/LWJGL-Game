@@ -12,7 +12,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-
 public abstract class Entity {
   private AABB boundingBox;
   private Animation[] animations;
@@ -24,7 +23,8 @@ public abstract class Entity {
     this.animations = new Animation[max_animations];
     this.transform = transform;
     this.use_animation = 0;
-    this.boundingBox = new AABB(new Vector2f(this.transform.pos.x, this.transform.pos.y), new Vector2f(transform.scale.x, transform.scale.y));
+    this.boundingBox = new AABB(new Vector2f(this.transform.pos.x, this.transform.pos.y),
+        new Vector2f(transform.scale.x, transform.scale.y));
   }
 
   void setAnimation(int index, Animation animation) {
@@ -47,8 +47,7 @@ public abstract class Entity {
       for (int j = 0; j < 5; j++) {
         boxes[i + j * 5] = world.getTileBoundingBox(
             (int) (((this.transform.pos.x / 2) + 0.5f) - (5 / 2)) + i,
-            (int) (((-this.transform.pos.y / 2) + 0.5f) - (5 / 2)) + j
-        );
+            (int) (((-this.transform.pos.y / 2) + 0.5f) - (5 / 2)) + j);
       }
     }
 
@@ -77,7 +76,8 @@ public abstract class Entity {
   private AABB getClosestBox(AABB[] boxes, AABB box) {
     for (AABB aabb : boxes) {
       if (aabb != null) {
-        if (box == null) box = aabb;
+        if (box == null)
+          box = aabb;
 
         Vector2f length1 = box.getCenter().sub(this.transform.pos.x, this.transform.pos.y, new Vector2f());
         Vector2f length2 = aabb.getCenter().sub(this.transform.pos.x, this.transform.pos.y, new Vector2f());
